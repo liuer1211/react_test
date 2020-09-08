@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>07_component_state</title>
+</head>
+<body>
+
+<div id="example"></div>
+
+<script type="text/javascript" src="../js/react.development.js"></script>
+<script type="text/javascript" src="../js/react-dom.development.js"></script>
+<script type="text/javascript" src="../js/babel.min.js"></script>
+
+<script type="text/babel">
+  /*
+  需求: 自定义组件, 功能说明如下
+    1. 显示h2标题, 初始文本为: 你喜欢我
+    2. 点击标题更新为: 我喜欢你
+  */
+  // class Like extends React.Component {
+  //   constructor (props) {
+  //     super(props)
+  //     // 初始化状态
+  //     this.state = {
+  //       isLikeMe: true
+  //     }
+  //     // 绑定this为组件对象
+  //     this.change = this.change.bind(this)
+  //   }
+  //   change () {
+  //     // 更新状态: this.setState()
+  //     // this.state.isLikeMe = !this.state.isLikeMe // 不能更新更新某个状态
+  //     this.setState({
+  //       isLikeMe: !this.state.isLikeMe
+  //     })
+  //   }
+  //   render () {
+  //     console.log('render()')
+  //     const text = this.state.isLikeMe ? '你喜欢我' : '我喜欢你'
+  //     return <h2 onClick={this.change}>{text}</h2>
+  //   }
+  // }
+  // ReactDOM.render(<Like />, document.getElementById('example'))
+
+  class Like extends React.Component {
+    constructor (props){
+      super(props) // 组件传值
+      // 初始化状态
+      this.state={
+        isLikeMe: true
+      }
+      // 绑定this为组件对象
+      this.change=this.change.bind(this)
+    }
+    // 方法：更改参数  在构造函数进行绑定
+    change() {
+      // this.state.isLikeMe=!this.state.isLikeMe // 不能更新某个状态
+      this.setState({ // 更新状态,必须使用setState
+        isLikeMe: !this.state.isLikeMe
+      })
+    }
+    render() {
+      console.log(this)
+      const text = this.state.isLikeMe ? '喜欢' : '不喜欢'
+      return <h2 onClick={this.change}>请点击：{text}</h2>
+    }
+  }
+  ReactDOM.render(<Like component={'like'}/>,document.getElementById('example'))
+</script>
+</body>
+</html>
+<!-- 
+react 绑定事件4中方法： 推荐1 2
+第一种方法：在构造器中绑定this（这也是官方推荐的方法）
+export default class Test extends Component {
+    constructor(props){
+        super(props)
+        this.handleClick = this.handleClick.bind(this)
+    }
+    handleClick(){
+        console.log('点击了',this)
+    }
+    render(){
+        return (
+            <div onClick={ this.handleClick }>click btn</div>
+        )
+    }
+}
+优点就是这种方法只会生成一个方法实例，并且绑定一次以后可以多次使用。
+第二种方法：属性初始化器语法(class fields)绑定回调函数
+export default class Test extends Component {
+    handleClick=()=>{
+        console.log('点击了',this)
+    }
+    render(){
+        return (
+            <div onClick={ this.handleClick }>click btn</div>
+        )
+    }
+}
+这种方法的好处就不用说了，首先在代码上就精简了很多。但是官方文档中说这个是"实验性"的语法，所以还是需要babel转义的。不过Create React App默认是启用这种语法的，所以还是可以放心使用的。
+第三种方法：在调用的时候绑定this
+export default class Test extends Component {
+    handleClick(){
+        console.log('点击了',this)
+    }
+    render(){
+        return (
+            <div onClick={ this.handleClick.bind(this) }>click btn</div>
+        )
+    }
+}
+第四种方法：使用箭头函数绑定this
+export default class Test extends Component {
+    handleClick(){
+        console.log('点击了',this)
+    }
+    render(){
+        return (
+            <div onClick={ ()=> this.handleClick() }>click btn</div>
+        )
+    }
+} -->
